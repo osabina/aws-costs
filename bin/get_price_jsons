@@ -1,0 +1,28 @@
+#!/bin/sh
+
+URIS="/ec2/pricing/ri-light-linux.json
+/ec2/pricing/ri-medium-linux.json
+/ec2/pricing/ri-heavy-linux.json
+/ec2/pricing/pricing-on-demand-instances.json
+/ec2/pricing/pricing-ebs-optimized-instances.json
+/ec2/pricing/pricing-ebs.json
+/ec2/pricing/pricing-elastic-ips.json
+/ec2/pricing/pricing-elb.json
+/ec2/pricing/pricing-cloudwatch.json
+/s3/pricing/pricing-storage.json"
+# Not useful right now.
+#/ec2/pricing/ri-light-mswin.json
+#/ec2/pricing/ri-medium-mswin.json
+#/ec2/pricing/ri-heavy-mswin.json
+
+URL_HEAD="http://aws.amazon.com"
+
+#DESTDIR="$(dirname $0)/../etc"
+DESTDIR=$1
+
+for uri in $URIS; do
+    file=$(basename $uri)
+    curl -o "$DESTDIR/$file.tmp" "$URL_HEAD$uri"
+    tr -d '\n' < "$DESTDIR/$file.tmp" > "$DESTDIR/$file"
+    rm "$DESTDIR/$file.tmp"
+done
